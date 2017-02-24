@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="toplevel"
+xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+
+  <rule id ="toplevel" scope ="public">
+    <one-of>
+      <item>
+        <!--Make it [change] at/in the [location]-->
+        Make it <tag>out.method = "POST";</tag><one-of>
+          <item>
+            <ruleref uri ="#brightnessChange"></ruleref>
+            <tag>
+              out.JSONBody=rules.brightnessChange;
+              out.URL="https://maker.ifttt.com/trigger/bright_dim/with/key/6nYdQ0uvGufpz2iHqMPa9";
+            </tag>
+          </item>
+          <item>
+            <ruleref uri ="#colorChange"></ruleref>
+            <tag>
+              out.JSONBody=rules.colorChange;
+              out.URL="https://maker.ifttt.com/trigger/color/with/key/6nYdQ0uvGufpz2iHqMPa9";
+            </tag>
+          </item>
+        </one-of> <one-of>
+          <item repeat ="0-1">at</item>
+          <item repeat ="0-1">in the</item>
+        </one-of>
+        <ruleref uri ="#location"></ruleref>
+      </item>
+      <item>
+        <!--Make [the] [location] [change]-->
+        <tag>out.method = "POST"</tag>
+        Make <item repeat ="0-1"> the </item><ruleref uri ="#location"></ruleref> <one-of>
+          <item>
+            <ruleref uri ="#brightnessChange"></ruleref>
+            <tag>out.URL = "https://maker.ifttt.com/trigger/bright_dim/with/key/6nYdQ0uvGufpz2iHqMPa9"; out.JSONBody = rules.brightnessChange;</tag>
+          </item>
+          <item>
+            <ruleref uri ="#colorChange"></ruleref>
+            <tag>out.URL = "https://maker.ifttt.com/trigger/color/with/key/6nYdQ0uvGufpz2iHqMPa9"; out.JSONBody = rules.colorChange;</tag>
+          </item>
+        </one-of>
+
+      </item>
+      <item>
+        <!--Set brightness to [1-100] at/in the [location]-->
+        Set brightness to <ruleref uri ="#digits"></ruleref> <one-of>
+          <item>at</item>
+          <item>in the</item>
+        </one-of>
+        <ruleref uri ="#location"></ruleref>
+      </item>
+      <item>
+        <!--Switch/turn [change] [the] [object] at/in the [location]-->
+        <tag>out.method = "GET";out.JSONBody = "{\"value1\": \"\"} ";</tag>
+        <one-of>
+          <item>Switch</item>
+          <item>Turn</item>
+        </one-of>
+        <ruleref uri="#stateChange"></ruleref>
+        <tag>out.URL = rules.stateChange</tag>
+        <item repeat ="0-1">the</item>
+        <ruleref uri="#object"></ruleref>
+        <one-of>
+          <item repeat ="0-1">at</item>
+          <item repeat ="0-1">in the</item>
+        </one-of>
+        <ruleref uri ="#location"></ruleref>
+      </item>
+      <item>
+        <!--Switch/turn [change] the [location] [object]-->
+        <tag>out.method = "GET";out.JSONBody = "{\"value1\": \"\"} ";</tag>
+        <one-of>
+          <item>Switch</item>
+          <item>Turn</item>
+        </one-of>  <ruleref uri="#stateChange"></ruleref> <tag>out.URL = rules.stateChange</tag>the
+        <ruleref uri ="#location"></ruleref>        <ruleref uri="#object"></ruleref>
+      </item>
+    </one-of>
+  </rule>
+  <rule id ="object" scope ="public">
+    <one-of>
+      <item>Bulb</item>
+      <item>Light</item>
+      <item>Bulbs</item>
+      <item>Lights</item>
+    </one-of>
+  </rule>
+  <rule id ="brightnessChange" scope ="public">
+    <one-of>
+      <item>
+        Dark<tag>out = "{\"value1\": \"25\"} ";</tag>
+      </item>
+      <item>
+        Darker<tag>out = "{\"value1\": \"1\"} ";</tag>
+      </item>
+      <item>
+        Dim<tag>out = "{\"value1\": \"1\"} ";</tag>
+      </item>
+      <item>
+        Bright<tag>out = "{\"value1\": \"75\"} ";</tag>
+      </item>
+      <item>
+        Brighter<tag>out = "{\"value1\": \"100\"} ";</tag>
+      </item>
+      <item>
+        Normal<tag>out = "{\"value1\": \"50\"} ";</tag>
+      </item>
+    </one-of>
+  </rule>
+  <rule id ="colorChange" scope ="public">
+    <one-of>
+      <item>
+        Blu<tag>out = "{\"value1\": \"blue\"} ";</tag>
+      </item>
+      <item>
+        Yellow<tag>out = "{\"value1\": \"yellow\"} ";</tag>
+      </item>
+      <item>
+        Red<tag>out = "{\"value1\": \"red\"} ";</tag>
+      </item>
+      <item>
+        Purple<tag>out = "{\"value1\": \"purple\"} ";</tag>
+      </item>
+      <item>
+        Green<tag>out = "{\"value1\": \"green\"} ";</tag>
+      </item>
+      <item>
+        Pink<tag>out = "{\"value1\": \"pink\"} ";</tag>
+      </item>
+      <item>
+        Orange<tag>out = "{\"value1\": \"orange\"} ";</tag>
+      </item>
+      <item>
+        White<tag>out = "{\"value1\": \"white\"} ";</tag>
+      </item>
+    </one-of>
+  </rule>
+  <rule id ="stateChange" scope ="public">
+    <one-of>
+      <item>
+        On<tag>out = "https://maker.ifttt.com/trigger/turn_on/with/key/6nYdQ0uvGufpz2iHqMPa9"</tag>
+      </item>
+      <item>
+        Off<tag>out = "https://maker.ifttt.com/trigger/turn_off/with/key/6nYdQ0uvGufpz2iHqMPa9"</tag>
+      </item>
+    </one-of>
+  </rule>
+  <rule id ="location" scope ="public">
+    <one-of>
+      <item>Kitchen</item>
+      <item>Keychain</item>
+      <item>Kichen</item>
+      <item>Bedroom</item>
+      <item>Living Room</item>
+    </one-of>
+  </rule>
+  <rule id ="digits" scope ="public">
+    <one-of>
+      <item>
+        One <tag> out = 1; </tag>
+      </item>
+      <item>
+        Two <tag> out = 2; </tag>
+      </item>
+      <item>
+        Three <tag> out = 3; </tag>
+      </item>
+      <item>
+        Four <tag> out = 4; </tag>
+      </item>
+      <item>
+        Five <tag> out = 5; </tag>
+      </item>
+      <item>
+        Six <tag> out = 6; </tag>
+      </item>
+      <item>
+        Seven <tag>out = 7; </tag>
+      </item>
+      <item>
+        Eight <tag> out = 8; </tag>
+      </item>
+      <item>
+        Nine <tag> out = 9; </tag>
+      </item>
+    </one-of>
+  </rule>
+</grammar>
