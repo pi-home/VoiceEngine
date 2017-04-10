@@ -44,7 +44,8 @@ namespace SmartHome
 
             sre = new SpeechRecognitionEngine(new System.Globalization.CultureInfo("en-US")); //load US English speech recognition engine
             sre.LoadGrammar(new Grammar("grammar2.xml"));
-            sre.SetInputToAudioStream(streamer, new SpeechAudioFormatInfo(44100, AudioBitsPerSample.Sixteen, AudioChannel.Stereo));
+            sre.SetInputToDefaultAudioDevice();
+            //sre.SetInputToAudioStream(streamer, new SpeechAudioFormatInfo(44100, AudioBitsPerSample.Sixteen, AudioChannel.Stereo));
             sre.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(sre_SpeechRecognized);
 
             appServer.NewMessageReceived += new SessionHandler<WebSocketSession, string>(appServer_NewMessageReceived);
@@ -116,36 +117,36 @@ namespace SmartHome
         }
         private static void sre_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
         {
+            String op=null,loc=null,dev=null, method = null;
             Console.WriteLine("Detected");
             foreach (RecognizedPhrase alt in e.Result.Alternates)
             {
                 Console.WriteLine("Detected: " + alt.Text + ", Confidence: " + alt.Confidence);
-
+                Console.WriteLine(e.Result.Semantics["operation"].Value.ToString());
+                Console.WriteLine(e.Result.Semantics["location"].Value.ToString());
+                Console.WriteLine(e.Result.Semantics["object"].Value.ToString());
+                op = e.Result.Semantics["operation"].Value.ToString();
+                loc = e.Result.Semantics["location"].Value.ToString();
+                dev = e.Result.Semantics["object"].Value.ToString();
+                method = e.Result.Semantics["method"].Value.ToString();
             }
             float confidence = e.Result.Confidence;
-            //if (confidence > 0.6)  //checking confidence of speech
-            //{
-            //    string url = e.Result.Semantics["URL"].Value.ToString();
-            //    string method = e.Result.Semantics["method"].Value.ToString();
-            //    string payload = e.Result.Semantics["JSONBody"].Value.ToString();
-            //    Console.WriteLine(url);
-            //    Console.WriteLine(method);
-            //    Console.WriteLine(payload);
-            //    if (method.Equals("GET"))
-            //    {
-            //        HttpGet(url);
-            //    }
-            //    if (method.Equals("POST"))
-            //    {
-            //        HttpPost(url, payload, method);
-            //    }
-            //    socketSession.Send("Hi: Message Received!!!");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Nothing Detected");
-            //    socketSession.Send("Nothing Detected");
-            //}
+            if(confidence > 0.6)
+            {
+                String URI = "https://smarthome295.herokuapp.com/controlDevices";
+                Body body = new Body
+                {
+                    operation = op,
+                    location = loc,
+                    device = dev
+                };
+                Console.WriteLine(body.ToString());
+                //HttpPost(URI, body.ToString(), method);
+            }
+            else
+            {
+                Console.WriteLine("Try again");
+            }
         }
         public static void HttpGet(string URI)
         {
@@ -171,6 +172,7 @@ namespace SmartHome
             try
             {
                 string send = JsonConvert.SerializeObject(data);
+                Console.WriteLine(send);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URI);
                 request.Method = method;
                 request.ContentType = "application/json";

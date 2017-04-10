@@ -5,14 +5,39 @@ xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
   <rule id ="toplevel" scope ="public">
     <one-of>
       <item>
-        Turn on bedroom lights
-      </item>
-      <item>
-        Turn off bedroom lights
-      </item>
-      <item>
-        Open garage doors
+        <tag>out.method = "POST"</tag>
+        <one-of>
+          <item>Switch</item>
+          <item>Turn</item>
+        </one-of> <ruleref uri ="#operation"></ruleref><tag>out.operation = rules.operation</tag> <ruleref uri ="#location"></ruleref><tag>out.location = rules.location</tag> <ruleref uri ="#object"></ruleref> <tag>out.object = rules.object</tag>
       </item>
     </one-of>    
+  </rule>
+  <rule id ="operation" scope ="public">
+    <one-of>
+      <item>
+        on
+      </item>
+      <item>
+        off
+      </item>
+    </one-of>
+  </rule>
+  <rule id ="object" scope ="public">
+    <one-of>
+      <item>Bulb</item>
+      <item>Light</item>
+      <item>Bulbs</item>
+      <item>Lights</item>
+    </one-of>
+  </rule>
+<rule id ="location" scope ="public">
+    <one-of>
+      <item>Kitchen</item>
+      <item>Keychain</item>
+      <item>Kichen</item>
+      <item>Bedroom</item>
+      <item>Living Room</item>
+    </one-of>
   </rule>
 </grammar>
