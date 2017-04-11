@@ -140,8 +140,8 @@ namespace SmartHome
                     location = loc,
                     device = dev
                 };
-                Console.WriteLine(body.ToString());
-                //HttpPost(URI, body.ToString(), method);
+                Console.WriteLine(JsonConvert.SerializeObject(body));
+                HttpPost(URI, JsonConvert.SerializeObject(body), method);
             }
             else
             {
@@ -171,8 +171,8 @@ namespace SmartHome
         {
             try
             {
-                string send = JsonConvert.SerializeObject(data);
-                Console.WriteLine(send);
+                //string send = JsonConvert.SerializeObject(data);
+                //Console.WriteLine(send);
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URI);
                 request.Method = method;
                 request.ContentType = "application/json";
